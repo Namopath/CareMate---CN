@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "86540706223",
+    "project_id": "caremate-f4422",
+    "storage_bucket": "caremate-f4422.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:86540706223:android:0ba289233d139ef568cf5a",
+        "android_client_info": {
+          "package_name": "com.example.caremate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqxg2EUwXkgNwTp5jJemqBLTwr9AtdJos"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
