@@ -1,4 +1,4 @@
-// import 'package:flutter_tts/flutter_tts.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:caremate/services/colors.dart';
@@ -8,7 +8,8 @@ import 'package:google_fonts/google_fonts.dart';
 const String apiKey = "AIzaSyDtazM_IAsfk0xelMUUpdksDWe711Rxycs";
 
 SpeechToText _speechToText = SpeechToText();
-// FlutterTts flutterTts = FlutterTts();
+
+FlutterTts flutterTts = FlutterTts();
 
 class VoiceAssistantPage extends StatefulWidget {
   VoiceAssistantPage({super.key});
@@ -19,7 +20,7 @@ class VoiceAssistantPage extends StatefulWidget {
 
 class _VoiceAssistantPageState extends State<VoiceAssistantPage> {
   var response;
-  String _lastWords = '';
+  String _lastWords = "";
   bool _speechEnabled = false;
   bool isListening = false;
   var ttsState;
@@ -43,14 +44,14 @@ class _VoiceAssistantPageState extends State<VoiceAssistantPage> {
   }
 
   // listen speech to text
-  void _startListening() async {
+  Future _startListening() async {
     isListening = true;
     await _speechToText.listen(onResult: _onSpeechResult);
     setState(() {});
   }
 
   // stop listen speech to text
-  void _stopListening() async {
+  Future _stopListening() async {
     isListening = false;
     await _speechToText.stop();
     setState(() {});
@@ -63,20 +64,18 @@ class _VoiceAssistantPageState extends State<VoiceAssistantPage> {
   }
 
   // speak text to speech
-  // Future _speak() async {
-  //   await flutterTts.setLanguage("en-US");
-  //   await flutterTts.setSpeechRate(1.0);
-  //   await flutterTts.setVolume(1.0);
-  //   await flutterTts.setPitch(1.0);
-  //   var result = await flutterTts.speak("Hello World");
-  //   if (result == 1) setState(() => ttsState = ttsState.playing);
-  // }
+  Future _speak(String text) async {
+    await flutterTts.setLanguage("en-US");
+    await flutterTts.setSpeechRate(0.5);
+    await flutterTts.setVolume(1.0);
+    await flutterTts.setPitch(1.0);
+    await flutterTts.speak(text);
+  }
 
   // stop text to speech
-  // Future _stop() async {
-  //   var result = await flutterTts.stop();
-  //   if (result == 1) setState(() => ttsState = ttsState.stopped);
-  // }
+  Future _stop() async {
+    await flutterTts.stop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,19 +115,20 @@ class _VoiceAssistantPageState extends State<VoiceAssistantPage> {
               onTap: () async {
                 if (_speechEnabled) {
                   _speechToText.isNotListening
-                      ? _startListening()
-                      : _stopListening();
+                      ? await _startListening()
+                      : await _stopListening();
                 }
-                // final responseAI =
-                //     await model.generateContent([Content.text("hello")]);
 
-                // setState(() {
-                //   response = responseAI.text;
-                // });
+                if (isListening == false && _lastWords != "") {
+                  final responseAI =
+                      await model.generateContent([Content.text(_lastWords)]);
 
-                // print(response);
+                  setState(() {
+                    response = responseAI.text;
+                  });
 
-                // _speak();
+                  await _speak(response);
+                }
               },
               child: Container(
                 width: 100,

@@ -6,23 +6,23 @@ import 'package:caremate/services/colors.dart';
 import 'package:flutter/material.dart';
 
 class Navigation extends StatefulWidget {
-  Navigation({super.key});
+  final bool connectionState;
+  Navigation({super.key, required this.connectionState});
 
   @override
   State<Navigation> createState() => _NavigationState();
 }
 
 class _NavigationState extends State<Navigation> {
-  List<Widget> tabs = [
-    const HomePage(),
-    VoiceAssistantPage(),
-    const PillsPage(),
-    const ControlPage(),
-  ];
   int index = 0;
-
   @override
   Widget build(BuildContext context) {
+    List<Widget> tabs = [
+      HomePage(connectionState: widget.connectionState),
+      VoiceAssistantPage(),
+      const PillsPage(),
+      ControlPage(connectionState: widget.connectionState),
+    ];
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(

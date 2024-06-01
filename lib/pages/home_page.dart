@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:caremate/components/my_elder.dart';
 import 'package:caremate/components/my_textfield.dart';
+import 'package:caremate/pages/scan_page.dart';
+import 'package:caremate/services/ble_container.dart';
 import 'package:caremate/services/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,9 +10,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final bool connectionState;
+  const HomePage({super.key, required this.connectionState});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -24,6 +28,11 @@ class _HomePageState extends State<HomePage> {
   File? profileController;
 
   var currentUser = FirebaseAuth.instance.currentUser;
+
+  // disconnect device method
+  void disconnectDevice() async {
+    await context.read<BleContainer>().bluetoothDevice!.disconnect();
+  }
 
   // show adding elder dialog
   void addElder() {
@@ -641,63 +650,137 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 10),
 
               // connection state
-              Container(
-                padding: const EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    // bluetooth icon
-                    const Icon(Icons.bluetooth_disabled,
-                        size: 60, color: ColorAsset.error),
-
-                    // device status + connect button
-                    Column(children: [
-                      // connection state
-                      Row(
+              widget.connectionState == true
+                  ? Container(
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Text("Connection State : ",
-                              style: GoogleFonts.sen(
-                                  fontSize: 16, fontWeight: FontWeight.bold)),
-                          Text("Connected",
-                              style: GoogleFonts.sen(
-                                  fontSize: 16, fontWeight: FontWeight.bold))
+                          // bluetooth icon
+                          const Icon(Icons.bluetooth,
+                              size: 60, color: ColorAsset.primary),
+
+                          // device status + connect button
+                          Column(children: [
+                            // connection state
+                            Row(
+                              children: [
+                                Text("Connection State : ",
+                                    style: GoogleFonts.sen(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold)),
+                                Text("Connected",
+                                    style: GoogleFonts.sen(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold))
+                              ],
+                            ),
+
+                            const SizedBox(height: 5),
+
+                            // Disconnect device
+                            GestureDetector(
+                              onTap: disconnectDevice,
+                              child: Container(
+                                width: 230,
+                                padding: const EdgeInsets.all(3),
+                                decoration: BoxDecoration(
+                                    color: ColorAsset.secondary,
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    // add icon
+                                    const Icon(Icons.check_circle_outline,
+                                        size: 20, color: Colors.white),
+
+                                    const SizedBox(width: 5),
+
+                                    // text
+                                    Text("Device Connected",
+                                        style: GoogleFonts.sen(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white)),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ])
                         ],
                       ),
+                    )
+                  : Container(
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          // bluetooth icon
+                          const Icon(Icons.bluetooth_disabled,
+                              size: 60, color: ColorAsset.error),
 
-                      const SizedBox(height: 5),
+                          // device status + connect button
+                          Column(children: [
+                            // connection state
+                            Row(
+                              children: [
+                                Text("Connection State : ",
+                                    style: GoogleFonts.sen(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold)),
+                                Text("Disconnected",
+                                    style: GoogleFonts.sen(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold))
+                              ],
+                            ),
 
-                      // connect device
-                      Container(
-                        width: 230,
-                        padding: const EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                            color: ColorAsset.secondary,
-                            borderRadius: BorderRadius.circular(5)),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // add icon
-                            const Icon(Icons.add_circle_outline,
-                                size: 20, color: Colors.white),
+                            const SizedBox(height: 5),
 
-                            const SizedBox(width: 5),
+                            // connect device
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ScanPage()));
+                              },
+                              child: Container(
+                                width: 230,
+                                padding: const EdgeInsets.all(3),
+                                decoration: BoxDecoration(
+                                    color: ColorAsset.secondary,
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    // add icon
+                                    const Icon(Icons.add_circle_outline,
+                                        size: 20, color: Colors.white),
 
-                            // text
-                            Text("Connect Device",
-                                style: GoogleFonts.sen(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white)),
-                          ],
-                        ),
-                      )
-                    ])
-                  ],
-                ),
-              ),
+                                    const SizedBox(width: 5),
+
+                                    // text
+                                    Text("Connect Device",
+                                        style: GoogleFonts.sen(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white)),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ])
+                        ],
+                      ),
+                    ),
             ],
           ),
         ),

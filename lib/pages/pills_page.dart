@@ -143,6 +143,52 @@ class _PillsPageState extends State<PillsPage> {
             ));
   }
 
+  void deletePill(String dateTime, String pill) async {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Delete Pill",
+                  style: GoogleFonts.sen(
+                    fontWeight: FontWeight.bold,
+                  )),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Cancel",
+                        style: GoogleFonts.sen(
+                            fontWeight: FontWeight.bold, color: Colors.black))),
+                TextButton(
+                    onPressed: () async {
+                      showDialog(
+                          context: context,
+                          builder: (context) => const Center(
+                              child: CircularProgressIndicator(
+                                  color: ColorAsset.primary)));
+                      await FirebaseFirestore.instance
+                          .collection("Users")
+                          .doc(currentUser!.email)
+                          .collection("Pills")
+                          .doc(dateTime)
+                          .update({
+                        "${pill}_Name": "",
+                        "${pill}_Hour": "",
+                        "${pill}_Minute": "",
+                        "${pill}_Period": "",
+                      });
+
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                    child: Text("DELETE",
+                        style: GoogleFonts.sen(
+                            fontWeight: FontWeight.bold,
+                            color: ColorAsset.error))),
+              ],
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -237,7 +283,9 @@ class _PillsPageState extends State<PillsPage> {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                managePill(formattedDate, "Pill01");
+                                pills["Pill01_Name"] != ""
+                                    ? deletePill(formattedDate, "Pill01")
+                                    : managePill(formattedDate, "Pill01");
                               },
                               child: MyPill(
                                 pillName: pills["Pill01_Name"] != ""
@@ -255,7 +303,9 @@ class _PillsPageState extends State<PillsPage> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                managePill(formattedDate, "Pill02");
+                                pills["Pill02_Name"] != ""
+                                    ? deletePill(formattedDate, "Pill02")
+                                    : managePill(formattedDate, "Pill02");
                               },
                               child: MyPill(
                                 pillName: pills["Pill02_Name"] != ""
@@ -273,7 +323,9 @@ class _PillsPageState extends State<PillsPage> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                managePill(formattedDate, "Pill03");
+                                pills["Pill03_Name"] != ""
+                                    ? deletePill(formattedDate, "Pill03")
+                                    : managePill(formattedDate, "Pill03");
                               },
                               child: MyPill(
                                 pillName: pills["Pill03_Name"] != ""
