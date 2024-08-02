@@ -1,13 +1,14 @@
 {
   "project_info": {
-    "project_number": "86540706223",
-    "project_id": "caremate-f4422",
-    "storage_bucket": "caremate-f4422.appspot.com"
+    "project_number": "693025849380",
+    "firebase_url": "https://caremateapp-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "caremateapp",
+    "storage_bucket": "caremateapp.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:86540706223:android:0ba289233d139ef568cf5a",
+        "mobilesdk_app_id": "1:693025849380:android:70caafc1d6d03a940698b1",
         "android_client_info": {
           "package_name": "com.example.caremate"
         }
@@ -15,7 +16,45 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDqxg2EUwXkgNwTp5jJemqBLTwr9AtdJos"
+          "current_key": "AIzaSyC3Qnn6TVKg8ys7gJsNFhRcG5mPzKR5v1s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:693025849380:android:4458cbf28a59b72f0698b1",
+        "android_client_info": {
+          "package_name": "com.example.caremate_new_design"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3Qnn6TVKg8ys7gJsNFhRcG5mPzKR5v1s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:693025849380:android:6cdfced9ef10e2cb0698b1",
+        "android_client_info": {
+          "package_name": "com.example.caremate_screen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3Qnn6TVKg8ys7gJsNFhRcG5mPzKR5v1s"
         }
       ],
       "services": {

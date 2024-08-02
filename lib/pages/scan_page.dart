@@ -1,9 +1,11 @@
+import 'package:caremate/components/l10n.dart';
 import 'package:caremate/pages/connect_page.dart';
 import 'package:caremate/services/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:io';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ScanPage extends StatefulWidget {
   const ScanPage({super.key});
@@ -40,11 +42,11 @@ class _ScanPageState extends State<ScanPage> {
         showDialog(
             context: context,
             builder: (context) => AlertDialog(
-                  title: Text("Error",
+                  title: Text(AppLocalizations.of(context)!.error,
                       style: GoogleFonts.sen(
                           fontWeight: FontWeight.bold,
                           color: ColorAsset.error)),
-                  content: Text("You're not enable bluetooth",
+                  content: Text("You've not enabled bluetooth",
                       style: GoogleFonts.sen(
                         fontWeight: FontWeight.bold,
                       )),
@@ -74,7 +76,7 @@ class _ScanPageState extends State<ScanPage> {
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: Colors.transparent,
-          title: Text("Scan Device",
+          title: Text(AppLocalizations.of(context)!.ble_scan,
               style: GoogleFonts.sen(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -103,7 +105,7 @@ class _ScanPageState extends State<ScanPage> {
                 const SizedBox(height: 10),
 
                 // scanning for your mate
-                Text("Scanning for Mate...",
+                Text("Scanning for CareMate...",
                     style: GoogleFonts.sen(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,

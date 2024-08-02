@@ -6,6 +6,7 @@ class BleContainer extends ChangeNotifier {
   BluetoothCharacteristic? writeCharacteristic;
   BluetoothCharacteristic? notifyCharacteristic;
 
+
   void changeDevice(BluetoothDevice device) {
     bluetoothDevice = device;
   }

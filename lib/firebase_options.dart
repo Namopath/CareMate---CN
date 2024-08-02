@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,15 +25,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -49,20 +40,54 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyBXr3U5uyNgbWUcRbpn5OEvGI3YeKs0Uvs',
+    appId: '1:693025849380:web:b77b8d5e64956e520698b1',
+    messagingSenderId: '693025849380',
+    projectId: 'caremateapp',
+    authDomain: 'caremateapp.firebaseapp.com',
+    databaseURL: 'https://caremateapp-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'caremateapp.appspot.com',
+    measurementId: 'G-RC5QC860HM',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDqxg2EUwXkgNwTp5jJemqBLTwr9AtdJos',
-    appId: '1:86540706223:android:0ba289233d139ef568cf5a',
-    messagingSenderId: '86540706223',
-    projectId: 'caremate-f4422',
-    storageBucket: 'caremate-f4422.appspot.com',
+    apiKey: 'AIzaSyC3Qnn6TVKg8ys7gJsNFhRcG5mPzKR5v1s',
+    appId: '1:693025849380:android:70caafc1d6d03a940698b1',
+    messagingSenderId: '693025849380',
+    projectId: 'caremateapp',
+    databaseURL: 'https://caremateapp-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'caremateapp.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCHpBHkA_0ERQeE5nmH500Kl-fE6MRKN5g',
-    appId: '1:86540706223:ios:593b25892c5757d368cf5a',
-    messagingSenderId: '86540706223',
-    projectId: 'caremate-f4422',
-    storageBucket: 'caremate-f4422.appspot.com',
+    apiKey: 'AIzaSyCs95DqyFpsxzfxbJQ_0d5We027LvIz7eg',
+    appId: '1:693025849380:ios:554eb4a59d903cf20698b1',
+    messagingSenderId: '693025849380',
+    projectId: 'caremateapp',
+    databaseURL: 'https://caremateapp-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'caremateapp.appspot.com',
     iosBundleId: 'com.example.caremate',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyCs95DqyFpsxzfxbJQ_0d5We027LvIz7eg',
+    appId: '1:693025849380:ios:554eb4a59d903cf20698b1',
+    messagingSenderId: '693025849380',
+    projectId: 'caremateapp',
+    databaseURL: 'https://caremateapp-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'caremateapp.appspot.com',
+    iosBundleId: 'com.example.caremate',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyBXr3U5uyNgbWUcRbpn5OEvGI3YeKs0Uvs',
+    appId: '1:693025849380:web:ddb65b95f7d5a16f0698b1',
+    messagingSenderId: '693025849380',
+    projectId: 'caremateapp',
+    authDomain: 'caremateapp.firebaseapp.com',
+    databaseURL: 'https://caremateapp-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'caremateapp.appspot.com',
+    measurementId: 'G-C1CNBKSE29',
   );
 }

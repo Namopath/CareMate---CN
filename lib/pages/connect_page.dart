@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'package:caremate/services/ble_container.dart';
 import 'package:caremate/services/colors.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ConnectPage extends StatefulWidget {
   final BluetoothDevice device;
@@ -17,7 +18,7 @@ class ConnectPage extends StatefulWidget {
 
 class _ConnectPageState extends State<ConnectPage> {
   @override
-  var currentUser = FirebaseAuth.instance.currentUser;
+  // var currentUser = FirebaseAuth.instance.currentUser;
 
   // blueprints for ble
   Map<String, dynamic> BleContainerBlueprint = {"write": null, "notify": null};
@@ -32,14 +33,13 @@ class _ConnectPageState extends State<ConnectPage> {
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: Colors.transparent,
-          title: Text("Connect Device",
+          title: Text(AppLocalizations.of(context)!.connect_ble,
               style: GoogleFonts.sen(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.white)),
           leading: IconButton(
               onPressed: () {
-                Navigator.pop(context);
                 Navigator.pop(context);
               },
               icon: const Icon(Icons.keyboard_arrow_left, size: 29),
@@ -115,7 +115,7 @@ class _ConnectPageState extends State<ConnectPage> {
                                   size: 80,
                                 ),
                                 // const SizedBox(height: 5),
-                                Text(currentUser!.email!.split("@")[0],
+                                Text("Admin",
                                     style: GoogleFonts.sen(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold))
@@ -154,53 +154,69 @@ class _ConnectPageState extends State<ConnectPage> {
 
                       // systemize ble services and characteristic
                       for (var service in services) {
-                        if (service.serviceUuid.toString().length > 4) {
-                          // discover all characteristics in service
-                          List<BluetoothCharacteristic> characteristics =
-                              service.characteristics;
+                        //service.serviceUuid.toString().length > 4
+                        try{
+                          if (service.serviceUuid.toString().length > 4) {
+                            // discover all characteristics in service
+                            List<BluetoothCharacteristic> characteristics =
+                                service.characteristics;
+                            print("num of char: ${characteristics!.length}");
+                            if(characteristics! != null){
+                              for (BluetoothCharacteristic characteristic in characteristics!) {
+                                // discover descriptor in characteristic
+                                // List<BluetoothDescriptor> unFormattedDescriptors =
+                                //     characteristic.descriptors;
+                                //
+                                // // create instance for descriptor
+                                // String? descriptor;
+                                //
+                                // // read descriptor and format
+                                // for (var d in unFormattedDescriptors) {
+                                //   var descriptorText = await d.read();
+                                //   print("Description text: $descriptorText");
+                                //   descriptor = utf8.decode(descriptorText);
+                                // }
+                                //
+                                // print("Descriptor: $descriptor");
 
-                          for (var characteristic in characteristics) {
-                            // discover descriptor in characteristic
-                            List<BluetoothDescriptor> unFormattedDescriptors =
-                                characteristic.descriptors;
-
-                            // create instance for descriptor
-                            String? descriptor;
-
-                            // read descriptor and format
-                            for (var d in unFormattedDescriptors) {
-                              var descriptorText = await d.read();
-
-                              descriptor = utf8.decode(descriptorText);
+                                // organize BleContainer
+                                if (characteristic.properties.write) {
+                                  context.read<BleContainer>().changeWriteCharacteristic(
+                                      characteristic);
+                                  print("Write characteristic: $characteristic");
+                                }
+                                else if (characteristic.properties.notify) {
+                                  context.read<BleContainer>().changeNotifyCharacteristic(
+                                      characteristic);
+                                  print("Notify characteristic: $characteristic");
+                                }
+                              }
+                            }else{
+                              print("Service ${service.uuid} has no characteristics");
                             }
+                            
 
-                            print(descriptor);
-
-                            // organize BleContainer
-                            if (descriptor!.contains("write")) {
-                              BleContainerBlueprint["write"] = characteristic;
-                            }
-                            if (descriptor.contains("notify")) {
-                              BleContainerBlueprint["notify"] = characteristic;
-                            }
-                          }
+                          } 
+                        }catch (e){
+                          print("Try error: $e");
                         }
+
                       }
 
                       // write characteristic
-                      context.read<BleContainer>().changeWriteCharacteristic(
-                          BleContainerBlueprint["write"]);
+                      // context.read<BleContainer>().changeWriteCharacteristic(
+                      //     BleContainerBlueprint["write"]);
 
                       // notify characteristic
-                      context.read<BleContainer>().changeNotifyCharacteristic(
-                          BleContainerBlueprint["notify"]);
+                      // context.read<BleContainer>().changeNotifyCharacteristic(
+                      //     BleContainerBlueprint["notify"]);
 
                       // pop loading circle and go back to home page
                       Navigator.pop(context);
                       Navigator.pop(context);
                       Navigator.pop(context);
                     } catch (e) {
-                      print(e);
+                      print("Error: $e");
 
                       await widget.device.disconnect();
 
@@ -211,7 +227,7 @@ class _ConnectPageState extends State<ConnectPage> {
                       showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                                title: Text("Error",
+                                title: Text(AppLocalizations.of(context)!.error,
                                     style: GoogleFonts.sen(
                                         fontWeight: FontWeight.bold,
                                         color: ColorAsset.error)),
@@ -245,7 +261,7 @@ class _ConnectPageState extends State<ConnectPage> {
                         const Icon(Icons.add_circle_outline,
                             size: 29, color: Colors.white),
                         const SizedBox(width: 5),
-                        Text("Connect",
+                        Text(AppLocalizations.of(context)!.connect,
                             style: GoogleFonts.sen(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,

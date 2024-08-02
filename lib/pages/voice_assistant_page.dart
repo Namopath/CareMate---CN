@@ -4,8 +4,9 @@ import 'package:speech_to_text/speech_to_text.dart';
 import 'package:caremate/services/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-const String apiKey = "AIzaSyDtazM_IAsfk0xelMUUpdksDWe711Rxycs";
+const String apiKey = "AIzaSyCLQfdYZE8yyME3S4vC237PoURs79wPxrI";
 
 SpeechToText _speechToText = SpeechToText();
 
@@ -33,10 +34,9 @@ class _VoiceAssistantPageState extends State<VoiceAssistantPage> {
 
   // setup model
   final model = GenerativeModel(
-      model: 'gemini-1.5-flash-latest',
+      model: 'gemini-1.5-pro-latest',
       apiKey: apiKey,
-      systemInstruction: Content.text(
-          "You are elder care taker robot. Your name is CareMate. You give user advices about how to caring their old parent or old person in a short sentences with no emoji. You have pills reminder for elders, control robot movement from phone, minigames for old people, fall detection, emotion detection, and video call."));
+      systemInstruction: Content.text("You are an elder caretaker robot. Your name is CareMate. You give users advice about how to care for their relatives in short sentences and in a friendly welcoming tone with no emojis. You can also answer basic real world questions2"));
 
   // setup speech2text
   Future _initSpeech() async {
@@ -82,9 +82,10 @@ class _VoiceAssistantPageState extends State<VoiceAssistantPage> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         centerTitle: true,
         backgroundColor: Colors.transparent,
-        title: Text("Voice Assistant",
+        title: Text(AppLocalizations.of(context)!.assistant,
             style: GoogleFonts.sen(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -100,12 +101,14 @@ class _VoiceAssistantPageState extends State<VoiceAssistantPage> {
             const SizedBox(height: 20),
 
             // ai answer
-            SizedBox(
-              height: 140,
-              child: Text(response ?? "Hi!! I'm CareMate",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.sen(
-                      fontSize: 20, fontWeight: FontWeight.bold)),
+            SingleChildScrollView(
+              child: SizedBox(
+                height: 140,
+                child: Text(response ?? AppLocalizations.of(context)!.caremate_name,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.sen(
+                        fontSize: 20, fontWeight: FontWeight.bold)),
+              ),
             ),
 
             const SizedBox(height: 40),
