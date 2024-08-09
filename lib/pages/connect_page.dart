@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'package:caremate/pages/home_page.dart';
 import 'package:caremate/services/ble_container.dart';
 import 'package:caremate/services/colors.dart';
+import 'package:caremate/services/connected_or_notconneced.dart';
+import 'package:caremate/services/navigation.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -212,9 +215,10 @@ class _ConnectPageState extends State<ConnectPage> {
                       //     BleContainerBlueprint["notify"]);
 
                       // pop loading circle and go back to home page
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Navigation(connectionState: true,)),
+                      );
                     } catch (e) {
                       print("Error: $e");
 

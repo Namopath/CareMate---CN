@@ -44,13 +44,13 @@ class _Pills_pageState extends State<Pills_page> {
   String event3 = '';
   String? timeZone_str = '';
   int id = 0;
-  String med1 = "S-1";
-  String med2 = "S-2";
-  String med3 = "S-3";
+  String med1 = "M-1";
+  String med2 = "M-2";
+  String med3 = "M-3";
 
   void initState() {
     super.initState();
-    sendTodayMed();
+    // sendTodayMed();
 
     _onDaySelected(_focusedDay, _focusedDay);
   }
@@ -82,6 +82,7 @@ class _Pills_pageState extends State<Pills_page> {
     id = difference.inDays + 1; // Add 1 since the count starts from 0
   }
 
+  //TODO: sendTodayMed() can be split for each event
   void sendTodayMed() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String key1 = DateFormat('dd-MM-yyyy').format(DateTime.now()) + ' ' + 'event1';
@@ -159,6 +160,97 @@ class _Pills_pageState extends State<Pills_page> {
       }
     }
   }
+
+  SendEvent1Med() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String key1 = DateFormat('dd-MM-yyyy').format(DateTime.now()) + ' ' + 'event1';
+
+    if(prefs.containsKey(key1)){
+      String? eventData1 = prefs.getString(key1);
+      //If index error: change 3 to 2, might happen for some devices.
+      int hour = int.parse(eventData1!.split(" ")[3].split(":")[0]);
+      int min = int.parse(eventData1!.split(" ")[3].split(":")[1]);
+      DateTime now = DateTime.now();
+      DateTime event1_time = DateTime(now.year, now.month,now.day, hour, min);
+      Duration event1_diff = event1_time.difference(now);
+      print("Time difference: $event1_diff");
+      if(!event1_diff.isNegative){
+        await Future.delayed(event1_diff);
+        print("Time to send BLE 1");
+        if (widget.connectionState) {
+          final bleContainer = Provider.of<BleContainer>(context, listen: false);
+          if (bleContainer.writeCharacteristic != null) {
+            await bleContainer.writeCharacteristic!.write(utf8.encode(med1));
+            print("BLE message event 1 sent");
+          } else {
+            print("BLE write characteristic is not available");
+          }
+        } else {
+          print("BLE connection is not established");
+        }
+      }
+
+    }
+  }
+
+  SendEvent2Med() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String key2 = DateFormat('dd-MM-yyyy').format(DateTime.now()) + ' ' + 'event2';
+
+    if(prefs.containsKey(key2)){
+      String? eventData2 = prefs.getString(key2);
+      int hour = int.parse(eventData2!.split(" ")[3].split(":")[0]);
+      int min = int.parse(eventData2!.split(" ")[3].split(":")[1]);
+      DateTime now = DateTime.now();
+      DateTime event2_time = DateTime(now.year, now.month,now.day, hour, min);
+      Duration event2_diff = event2_time.difference(now);
+      print("Time difference: $event2_diff");
+      if(!event2_diff.isNegative){
+        await Future.delayed(event2_diff);
+        if (widget.connectionState) {
+          final bleContainer = Provider.of<BleContainer>(context, listen: false);
+          if (bleContainer.writeCharacteristic != null) {
+            await bleContainer.writeCharacteristic!.write(utf8.encode(med2));
+            print("BLE message event 2 sent");
+          } else {
+            print("BLE write characteristic is not available");
+          }
+        } else {
+          print("BLE connection is not established");
+        }
+      }
+    }
+  }
+
+  SendEvent3Med() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String key3 = DateFormat('dd-MM-yyyy').format(DateTime.now()) + ' ' + 'event3';
+
+    if(prefs.containsKey(key3)){
+      String? eventData3 = prefs.getString(key3);
+      int hour = int.parse(eventData3!.split(" ")[3].split(":")[0]);
+      int min = int.parse(eventData3!.split(" ")[3].split(":")[1]);
+      DateTime now = DateTime.now();
+      DateTime event3_time = DateTime(now.year, now.month,now.day, hour, min);
+      Duration event3_diff = event3_time.difference(now);
+      print("Time difference: $event3_diff");
+      if(!event3_diff.isNegative){
+        await Future.delayed(event3_diff);
+        if (widget.connectionState) {
+          final bleContainer = Provider.of<BleContainer>(context, listen: false);
+          if (bleContainer.writeCharacteristic != null) {
+            await bleContainer.writeCharacteristic!.write(utf8.encode(med3));
+            print("BLE message event 3 sent");
+          } else {
+            print("BLE write characteristic is not available");
+          }
+        } else {
+          print("BLE connection is not established");
+        }
+      }
+    }
+  }
+
 
   void _onDaySelected(DateTime day, DateTime focused_day) async {
     setState(() {
@@ -405,6 +497,7 @@ class _Pills_pageState extends State<Pills_page> {
 
                     // await scheduleTask1(eventDateTime, _focusedDay_format);
                     entry!.remove();
+                    await SendEvent1Med();
 
                   },
                   child: Container(
@@ -623,7 +716,7 @@ class _Pills_pageState extends State<Pills_page> {
 
                     // await scheduleTask2(eventDateTime, _focusedDay_format);
                     entry!.remove();
-
+                    await SendEvent2Med();
                   },
                   child: Container(
                     width: 150 ,
@@ -840,7 +933,7 @@ class _Pills_pageState extends State<Pills_page> {
 
                     // await scheduleTask3(eventDateTime, _focusedDay_format);
                     entry!.remove();
-
+                    await SendEvent3Med();
                   },
                   child: Container(
                     width: 150 ,
