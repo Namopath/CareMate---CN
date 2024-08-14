@@ -24,6 +24,8 @@ class Pills_page extends StatefulWidget{
   @override
   State<Pills_page> createState() => _Pills_pageState();
 }
+//TODO: For china change device time zone to China +8
+
 
 class _Pills_pageState extends State<Pills_page> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
@@ -47,14 +49,23 @@ class _Pills_pageState extends State<Pills_page> {
   String med1 = "M-1";
   String med2 = "M-2";
   String med3 = "M-3";
+  String localTimeZone = "";
+  int shanghaiOffset = 8;
 
   void initState() {
     super.initState();
     // sendTodayMed();
-
+    // print("Time zone: ${DateTime.now().timeZoneName}");
+    GetTimeZone();
     _onDaySelected(_focusedDay, _focusedDay);
   }
 
+  void GetTimeZone() async{
+    localTimeZone = await AwesomeNotifications().getLocalTimeZoneIdentifier();
+    print("Time zone: ${localTimeZone}");
+  }
+
+  //Schedule notifications might cause issues with different time zones??
   Future<void> scheduleNotification(int day, int month, int year, int hour, int minute, int id, String channel, String event_name) async {
     await AwesomeNotifications().createNotification(
       schedule: NotificationCalendar(
@@ -63,7 +74,7 @@ class _Pills_pageState extends State<Pills_page> {
         year: year,
         hour: hour,
         minute: minute,
-        timeZone: DateTime.now().timeZoneName,
+        timeZone: "Asia/Bangkok", //Or Asia/Shanghai
         repeats: false, // Set repeats to false for a one-time notification
         preciseAlarm: true,
       ),
@@ -95,8 +106,8 @@ class _Pills_pageState extends State<Pills_page> {
       int min = int.parse(eventData1!.split(" ")[3].split(":")[1]);
       DateTime now = DateTime.now();
       DateTime event1_time = DateTime(now.year, now.month,now.day, hour, min);
-      Duration event1_diff = event1_time.difference(now);
-      print("Time difference: $event1_diff");
+      Duration event1_diff = event1_time.difference(now); //From the device time and set time
+      print("Time difference: $event1_diff"); //TODO: Make this dependent on time zone
       if(!event1_diff.isNegative){
         await Future.delayed(event1_diff);
         print("Time to send BLE 1");
@@ -162,16 +173,24 @@ class _Pills_pageState extends State<Pills_page> {
   }
 
   SendEvent1Med() async{
+    int hour = 0;
+    int min = 0;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String key1 = DateFormat('dd-MM-yyyy').format(DateTime.now()) + ' ' + 'event1';
-
     if(prefs.containsKey(key1)){
       String? eventData1 = prefs.getString(key1);
-      //If index error: change 3 to 2, might happen for some devices.
-      int hour = int.parse(eventData1!.split(" ")[3].split(":")[0]);
-      int min = int.parse(eventData1!.split(" ")[3].split(":")[1]);
+      //If index error: change 3 to 2, or set time using 09:00 with a 0 in FRONT!
+      print("Length ${eventData1!.split(" ").length}");
+      if(eventData1!.split(" ").length > 3){
+        hour = int.parse(eventData1!.split(" ")[3].split(":")[0]);
+        min = int.parse(eventData1!.split(" ")[3].split(":")[1]);
+      }else{
+        hour = int.parse(eventData1!.split(" ")[2].split(":")[0]);
+        min = int.parse(eventData1!.split(" ")[2].split(":")[1]);
+      }
       DateTime now = DateTime.now();
-      DateTime event1_time = DateTime(now.year, now.month,now.day, hour, min);
+      DateTime event1_time = DateTime(now.year, now.month, now.day, hour, min);
+      print("Event 1 time: ${event1_time}");
       Duration event1_diff = event1_time.difference(now);
       print("Time difference: $event1_diff");
       if(!event1_diff.isNegative){
@@ -196,11 +215,18 @@ class _Pills_pageState extends State<Pills_page> {
   SendEvent2Med() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String key2 = DateFormat('dd-MM-yyyy').format(DateTime.now()) + ' ' + 'event2';
-
+    int hour = 0;
+    int min = 0;
     if(prefs.containsKey(key2)){
       String? eventData2 = prefs.getString(key2);
-      int hour = int.parse(eventData2!.split(" ")[3].split(":")[0]);
-      int min = int.parse(eventData2!.split(" ")[3].split(":")[1]);
+      if(eventData2!.split(" ").length > 3){
+        hour = int.parse(eventData2!.split(" ")[3].split(":")[0]);
+        min = int.parse(eventData2!.split(" ")[3].split(":")[1]);
+      } else{
+        hour = int.parse(eventData2!.split(" ")[2].split(":")[0]);
+        min = int.parse(eventData2!.split(" ")[2].split(":")[1]);
+      }
+
       DateTime now = DateTime.now();
       DateTime event2_time = DateTime(now.year, now.month,now.day, hour, min);
       Duration event2_diff = event2_time.difference(now);
@@ -225,11 +251,18 @@ class _Pills_pageState extends State<Pills_page> {
   SendEvent3Med() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String key3 = DateFormat('dd-MM-yyyy').format(DateTime.now()) + ' ' + 'event3';
-
+    int hour = 0;
+    int min = 0;
     if(prefs.containsKey(key3)){
       String? eventData3 = prefs.getString(key3);
-      int hour = int.parse(eventData3!.split(" ")[3].split(":")[0]);
-      int min = int.parse(eventData3!.split(" ")[3].split(":")[1]);
+      if(eventData3!.split(" ").length > 3){
+        hour = int.parse(eventData3!.split(" ")[3].split(":")[0]);
+        min = int.parse(eventData3!.split(" ")[3].split(":")[1]);
+      } else{
+        hour = int.parse(eventData3!.split(" ")[2].split(":")[0]);
+        min = int.parse(eventData3!.split(" ")[2].split(":")[1]);
+      }
+
       DateTime now = DateTime.now();
       DateTime event3_time = DateTime(now.year, now.month,now.day, hour, min);
       Duration event3_diff = event3_time.difference(now);
@@ -676,7 +709,7 @@ class _Pills_pageState extends State<Pills_page> {
                     print(_focusedDay);
                     time_data = DateFormat('HH:mm').format(eventDateTime);
                     _focusedDay_format = DateFormat('dd-MM-yyyy').format(_focusedDay);
-                    print(_focusedDay_format);
+                    print("Date chosen: ${_focusedDay_format}");
                     print(time_data);
 
                     // DocumentSnapshot docSnapshot = await eventsCollection.doc(_focusedDay_format).get();

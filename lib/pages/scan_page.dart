@@ -6,6 +6,8 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:io';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'dart:async';
+import 'package:hexcolor/hexcolor.dart';
 
 class ScanPage extends StatefulWidget {
   const ScanPage({super.key});
@@ -15,6 +17,9 @@ class ScanPage extends StatefulWidget {
 }
 
 class _ScanPageState extends State<ScanPage> {
+  List<ScanResult> devices = [];
+  final StreamController<List<ScanResult>> _scanResultsController = StreamController<List<ScanResult>>();
+
   @override
   void initState() {
     super.initState();
@@ -27,13 +32,15 @@ class _ScanPageState extends State<ScanPage> {
         FlutterBluePlus.onScanResults.listen(
           (results) {
             if (results.isNotEmpty) {
-              ScanResult r = results.last;
-              if (r.advertisementData.advName.contains("CareMate")) {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ConnectPage(device: r.device)));
-              }
+              // ScanResult r = results.last;
+              // if (r.advertisementData.advName.toLowerCase().contains("caremate")) {
+              //   // Navigator.push(
+              //   //     context,
+              //   //     MaterialPageRoute(
+              //   //         builder: (context) => ConnectPage(device: r.device)));
+              //   // print(r.advertisementData.advName);
+              // }
+              _scanResultsController.add(results);
             }
           },
           onError: (e) => print(e),
@@ -96,21 +103,90 @@ class _ScanPageState extends State<ScanPage> {
                 color: Colors.white, borderRadius: BorderRadius.circular(5)),
             width: double.infinity,
             height: 630,
-            child: Column(
-              children: [
-                const SizedBox(height: 40),
-                // scanning image
-                Image.asset("assets/scanning.png", width: 250, height: 250),
-
-                const SizedBox(height: 10),
-
-                // scanning for your mate
-                Text("Scanning for CareMate...",
-                    style: GoogleFonts.sen(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: ColorAsset.primary))
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  // const SizedBox(height: 40),
+                  // // scanning image
+                  // Image.asset("assets/scanning.png", width: 250, height: 250),
+                  //
+                  // // const SizedBox(height: 10),
+              
+                  Container(
+                    width: 300,
+                    height: 300,
+                    child: StreamBuilder<List<ScanResult>>(stream: _scanResultsController.stream, builder: (context, snapshot){
+                      if(snapshot.hasData){
+                        final filteredResult = snapshot.data!.where(
+                            (result) => result.device.platformName.toLowerCase().contains("caremate")
+                        ).toList();
+                        // print("Devices: ${filteredResult}");
+                        if(filteredResult.isEmpty){
+                          return Center(
+                            child: Text("We are unable to find CareMate",
+                            style: GoogleFonts.sen(
+                                fontWeight: FontWeight.bold,
+                                color: ColorAsset.error)
+                            ),
+                          );
+                        }
+                        return ListView.builder(itemCount: filteredResult.length,
+                          itemBuilder: (context, index){
+                          final data = filteredResult[index];
+                          return Padding(
+                            padding: EdgeInsets.fromLTRB(20,10,20,0),
+                            child: GestureDetector(
+                              onTap: () async{
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ConnectPage(device: data.device)));
+                              },
+                              child: Container(
+                                width: 300,
+                                height: 62,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: HexColor('#5490FE'),
+                                ),
+                                child: ListTile(
+                                  title: Text(data.device.platformName.isNotEmpty
+                                      ? data.device.platformName
+                                      : "Unknown Device",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: 'Montserrat_bold',
+                                        color: Colors.white
+                                    ),
+                                  ),
+                                  subtitle: Text(data.device.id.id,
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: 'Montserrat_bold',
+                                        color: Colors.white
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                          },
+                        );
+                      } else{
+                        return Center(
+                          child: Text("We are unable to find any devices",
+                              style: GoogleFonts.sen(
+                                  fontWeight: FontWeight.bold,
+                                  color: ColorAsset.error)
+                          ),
+                        );
+                      }
+                    }
+                    
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),

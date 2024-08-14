@@ -64,7 +64,7 @@ class _ConnectPageState extends State<ConnectPage> {
                     const SizedBox(height: 5),
                     // would you like to connect caremate to account
                     Text(
-                        "Would you like to connect to CareMate#ABC1 with your account?",
+                        "Would you like to connect to ${widget.device.platformName} with your account?",
                         style: GoogleFonts.sen(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
