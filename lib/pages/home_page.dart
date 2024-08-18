@@ -95,10 +95,10 @@ class _HomePageState extends State<HomePage> {
                 hungryNoti();
               }
               if(utf8.decode(value) == "H2"){
-                emergencyNoti();
+                bathroomNoti();
               }
               if(utf8.decode(value) == "H3"){
-                bathroomNoti();
+                emergencyNoti();
               }
             });
         } else {

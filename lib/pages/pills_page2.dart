@@ -24,7 +24,7 @@ class Pills_page extends StatefulWidget{
   @override
   State<Pills_page> createState() => _Pills_pageState();
 }
-//TODO: For china change device time zone to China +8
+//TODO: For china change device time zone to China +8, and then change from Asia/Bangkok to Asia/Shanghai
 
 
 class _Pills_pageState extends State<Pills_page> {
@@ -76,7 +76,8 @@ class _Pills_pageState extends State<Pills_page> {
         minute: minute,
         timeZone: "Asia/Bangkok", //Or Asia/Shanghai
         repeats: false, // Set repeats to false for a one-time notification
-        preciseAlarm: true,
+        preciseAlarm: false,
+        allowWhileIdle: true
       ),
       content: NotificationContent(
         id: 0, // Notification ID
@@ -121,6 +122,7 @@ class _Pills_pageState extends State<Pills_page> {
           }
         } else {
           print("BLE connection is not established");
+          ShowNoBLEConnection();
         }
       }
 
@@ -145,6 +147,7 @@ class _Pills_pageState extends State<Pills_page> {
           }
         } else {
           print("BLE connection is not established");
+          ShowNoBLEConnection();
         }
       }
     }
@@ -167,6 +170,7 @@ class _Pills_pageState extends State<Pills_page> {
           }
         } else {
           print("BLE connection is not established");
+          ShowNoBLEConnection();
         }
       }
     }
@@ -206,6 +210,7 @@ class _Pills_pageState extends State<Pills_page> {
           }
         } else {
           print("BLE connection is not established");
+          ShowNoBLEConnection();
         }
       }
 
@@ -243,6 +248,7 @@ class _Pills_pageState extends State<Pills_page> {
           }
         } else {
           print("BLE connection is not established");
+          ShowNoBLEConnection();
         }
       }
     }
@@ -279,6 +285,7 @@ class _Pills_pageState extends State<Pills_page> {
           }
         } else {
           print("BLE connection is not established");
+          ShowNoBLEConnection();
         }
       }
     }
@@ -516,7 +523,7 @@ class _Pills_pageState extends State<Pills_page> {
 
                     dayOfYear(_focusedDay);
 
-                    scheduleNotification(int.parse(DateFormat('dd').format(_focusedDay)),
+                     scheduleNotification(int.parse(DateFormat('dd').format(_focusedDay)),
                       int.parse(DateFormat('MM').format(_focusedDay)),
                       int.parse(DateFormat('yyyy').format(_focusedDay)),
                       int.parse(DateFormat('HH').format(eventDateTime)),
@@ -738,7 +745,7 @@ class _Pills_pageState extends State<Pills_page> {
 
                     dayOfYear(_focusedDay);
 
-                    scheduleNotification(int.parse(DateFormat('dd').format(_focusedDay)),
+                     scheduleNotification(int.parse(DateFormat('dd').format(_focusedDay)),
                       int.parse(DateFormat('MM').format(_focusedDay)),
                       int.parse(DateFormat('yyyy').format(_focusedDay)),
                       int.parse(DateFormat('HH').format(eventDateTime)),
@@ -955,7 +962,7 @@ class _Pills_pageState extends State<Pills_page> {
 
                     dayOfYear(_focusedDay);
 
-                    scheduleNotification(int.parse(DateFormat('dd').format(_focusedDay)),
+                     scheduleNotification(int.parse(DateFormat('dd').format(_focusedDay)),
                       int.parse(DateFormat('MM').format(_focusedDay)),
                       int.parse(DateFormat('yyyy').format(_focusedDay)),
                       int.parse(DateFormat('HH').format(eventDateTime)),
@@ -977,6 +984,70 @@ class _Pills_pageState extends State<Pills_page> {
                     ),
                     child: Center(
                       child: Text(AppLocalizations.of(context)!.save,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14 ,
+                            fontFamily: 'Montserrat_bold'
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          )
+      ),
+    ),
+  );
+
+  void ShowNoBLEConnection(){
+    final overlay = Overlay.of(context);
+
+    entry = OverlayEntry(builder: (context) =>
+        NoBle()
+    );
+    overlay.insert(entry!);
+  }
+  Widget NoBle() => Material(
+    color: Colors.black.withOpacity(0.25),
+    child: Center(
+      child: Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20 ),
+              border: Border.all(
+                  width: 2,
+                  color: Colors.black
+              )
+          ),
+          width: 200 ,
+          height: 300  ,
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 20 ),
+                child: Text("Error with medication dispensing",
+                  style: TextStyle(
+                      fontFamily: 'Montserrat_bold',
+                      fontSize: 14 ,
+                      color: Colors.black
+                  ),
+                ),
+              ),
+              Padding(padding: EdgeInsets.only(top: 25  ),
+                child: GestureDetector(
+                  onTap: () async {
+                    entry!.remove();
+                  },
+                  child: Container(
+                    width: 150 ,
+                    height: 40  ,
+                    decoration: BoxDecoration(
+                      color: HexColor('#CFE8EB'),
+                      borderRadius: BorderRadius.circular(10 ),
+                    ),
+                    child: Center(
+                      child: Text("OK",
                         style: TextStyle(
                             color: Colors.black,
                             fontSize: 14 ,
