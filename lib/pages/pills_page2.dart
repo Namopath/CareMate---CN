@@ -74,18 +74,19 @@ class _Pills_pageState extends State<Pills_page> {
         year: year,
         hour: hour,
         minute: minute,
-        timeZone: "Asia/Bangkok", //Or Asia/Shanghai
+        timeZone: "Asia/Shanghai", //Or Asia/Shanghai
         repeats: false, // Set repeats to false for a one-time notification
         preciseAlarm: false,
         allowWhileIdle: true
       ),
       content: NotificationContent(
-        id: 0, // Notification ID
+        id: minute, // Notification ID, if it is the same, it will override each other
         channelKey: channel, // Channel key defined in your app
         title: "Time to take your medication!",
         body: 'Time to take  $event_name',
       ),
     );
+    print("Notification Scheduled on ${day}, ${month}, ${hour}, ${minute}");
   }
 
   void dayOfYear(DateTime date) {

@@ -13,13 +13,12 @@ import 'package:caremate/services/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:caremate/services/language_config.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -40,8 +39,9 @@ class _HomePageState extends State<HomePage> {
   var weightController = TextEditingController();
   File? profileController;
   LanguageConfig languageConfig = Get.find<LanguageConfig>();
-  final ImagePicker picker = ImagePicker();
+  // final ImagePicker picker = ImagePicker();
   String confirm = "X";
+  var prevVal = "";
   List<String> elderNames = [];
   StreamController<List<String>> elderNameController = StreamController<List<String>>();
 
@@ -71,6 +71,7 @@ class _HomePageState extends State<HomePage> {
             await bleContainer.notifyCharacteristic!.setNotifyValue(true);
             bleContainer.notifyCharacteristic!.onValueReceived.listen((value) async{
               print("Main received: ${utf8.decode(value)}");
+
               if(utf8.decode(value) == "VC"){
                 Navigator.push(
                   context,
@@ -91,15 +92,16 @@ class _HomePageState extends State<HomePage> {
               if(utf8.decode(value) == "EM"){
                 emergencyNoti();
               }
-              if(utf8.decode(value) == "H1"){
+              if(utf8.decode(value) == "H1" && utf8.decode(value) != prevVal){
                 hungryNoti();
               }
-              if(utf8.decode(value) == "H2"){
+              if(utf8.decode(value) == "H2" && utf8.decode(value) != prevVal){
                 bathroomNoti();
               }
-              if(utf8.decode(value) == "H3"){
+              if(utf8.decode(value) == "H3" && utf8.decode(value) != prevVal){
                 emergencyNoti();
               }
+              prevVal = utf8.decode(value);
             });
         } else {
           print("BLE notify characteristic is not available");
@@ -181,14 +183,14 @@ class _HomePageState extends State<HomePage> {
                         // upload profile pic
                         GestureDetector(
                           onTap: () async {
-                            final returnedImage = await ImagePicker()
-                                .pickImage(source: ImageSource.gallery);
-
-                            if (returnedImage == null) return;
-
-                            setState(() {
-                              profileController = File(returnedImage.path);
-                            });
+                            // final returnedImage = await ImagePicker()
+                            //     .pickImage(source: ImageSource.gallery);
+                            //
+                            // if (returnedImage == null) return;
+                            //
+                            // setState(() {
+                            //   profileController = File(returnedImage.path);
+                            // });
                           },
                           child: Container(
                             width: 100,
@@ -373,15 +375,15 @@ class _HomePageState extends State<HomePage> {
                         // upload profile pic
                         GestureDetector(
                           onTap: () async {
-                            final returnedImage = await ImagePicker()
-                                .pickImage(source: ImageSource.gallery);
-
-                            if (returnedImage == null) return;
-                            if(imageUrl == null) return;
-
-                            setState(() {
-                              imageUrl = File(returnedImage.path);
-                            });
+                            // final returnedImage = await ImagePicker()
+                            //     .pickImage(source: ImageSource.gallery);
+                            //
+                            // if (returnedImage == null) return;
+                            // if(imageUrl == null) return;
+                            //
+                            // setState(() {
+                            //   imageUrl = File(returnedImage.path);
+                            // });
                           },
                           child: Container(
                             width: 100,

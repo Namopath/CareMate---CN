@@ -22,50 +22,6 @@ class _HealthPageState extends State<HealthPage> {
     // fetchData();
   }
 
-  // void fetchData()async{
-  //   String todayFormat = DateFormat('dd-MM-yyyy').format(today);
-  //   try{
-  //     var ref = FirebaseFirestore.instance.collection("games");
-  //     var posture = await ref.doc("Posture game").get();
-  //     var color_game = await ref.doc("color_game").get();
-  //     var grip = await ref.doc("Squeeze game").get();
-  //     if(posture.data()!.containsKey(todayFormat) && posture.data() != null){
-  //       setState(() {
-  //         postureData = posture.data()![todayFormat];
-  //         hasPlayed = true;
-  //       });
-  //       print(postureData);
-  //
-  //     } else{
-  //       print("Pose is null");
-  //     }
-  //     if(grip.data()!.containsKey(todayFormat) && grip.data() != null){
-  //       setState(() {
-  //         gripData = grip.data()![todayFormat];
-  //         hasPlayed = true;
-  //       });
-  //       print(gripData);
-  //
-  //     } else{
-  //       print("Grip is null");
-  //     }
-  //     if(color_game.data()!.containsKey(todayFormat)&& color_game.data() != null){
-  //       setState(() {
-  //         colorGameData = color_game.data()![todayFormat];
-  //         print(colorGameData);
-  //         hasPlayed = true;
-  //       });
-  //       print(color_game);
-  //
-  //     } else{
-  //       print('color is null');
-  //     }
-  //
-  //   }catch(e){
-  //
-  //   }
-  // }
-
   void dispose(){
     super.dispose();
   }
